@@ -23,7 +23,7 @@ SkillMapper is a web application that helps job seekers quickly assess how well 
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/aarif22827/SkillMapper.git](https://github.com/aarif22827/SkillMapper.git)
+    git clone https://github.com/aarif22827/SkillMapper.git
     cd SkillMapper
     ```
 
@@ -38,7 +38,6 @@ SkillMapper is a web application that helps job seekers quickly assess how well 
     ```bash
     pip install -r requirements.txt
     ```
-    (Note: You'll need to populate `requirements.txt` with `Flask` and `PyPDF2`)
 
 4.  **Run the Flask application:**
     ```bash
