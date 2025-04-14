@@ -17,7 +17,7 @@ SkillMapper is a web application that helps job seekers quickly assess how well 
 * **Top Keyword Suggestions:** Identifies and suggests key skills from the job description that might be important to emphasize.
 * **Clear Explanation:** Includes a "How This Tool Works" section to guide users.
 * **Single-Page Application:** Offers a smooth and iterative user experience.
-* **Coming Soon:** [Mention any planned future features, e.g., Visualization of skill overlap (word cloud, Venn diagram)].
+* **Coming Soon:** Word cloud for a nice visual comparison, NLP for better keyword analysis
 
 ## Getting Started
 
