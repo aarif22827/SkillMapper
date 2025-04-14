@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillMapper</title>
+    <style>
+        /* Basic CSS for layout - feel free to expand later */
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        #input-section, #results-section, #about-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #results-section {
+            display: none; /* Hidden by default */
+        }
+        #about-section {
+            display: none; /* Hidden by default */
+        }
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SkillMapper</h1>
+
+    <div id="input-section">
+        <h2>Analyze Your Skills Against a Job Description</h2>
+        <form id="skill-mapper-form">
+            <div>
+                <label for="job-description">Paste Job Description:</label><br>
+                <textarea id="job-description" name="job-description" rows="10"></textarea>
+            </div>
+            <div>
+                <label for="resume-upload">Upload Your Resume (PDF or TXT):</label><br>
+                <input type="file" id="resume-upload" name="resume-upload" accept=".pdf,.txt">
+            </div>
+            <div>
+                <input type="checkbox" id="manual-skills-toggle">
+                <label for="manual-skills-toggle">Having trouble uploading your resume? Enter skills manually.</label><br>
+                <textarea id="manual-skills-input" name="manual-skills" rows="5" style="display:none;"></textarea>
+            </div>
+            <button type="button" onclick="analyzeData()">Analyze</button>
+            <div id="upload-status"></div>
+        </form>
+    </div>
+
+    <div id="results-section">
+        <h2>Analysis Results</h2>
+        <div id="visualization-container">
+            </div>
+        <p>Skill Alignment: <span id="alignment-score"></span></p>
+        <p>Matched Skills: <span id="matched-skills"></span></p>
+        <p id="top-keywords-suggestion" style="margin-top: 20px;"></p>
+        <br>
+        <button type="button" onclick="restartAnalysis()">Restart Analysis</button>
+        <button type="button" onclick="showInputAgain()">Analyze with Different Data</button>
+    </div>
+
+    <div id="about-section">
+        <h2>How This Tool Works</h2>
+        <p>This tool helps you quickly assess how well your skills, extracted from your uploaded resume, align with the requirements listed in a job description you provide.</p>
+        <h3>Here's a breakdown:</h3>
+        <ul>
+            <li><strong>Job Description Input:</strong> Paste the text of the job description into the first text area.</li>
+            <li><strong>Resume Upload:</strong> Upload your resume in either PDF (.pdf) or plain text (.txt) format. The tool will attempt to extract the text content.</li>
+            <li><strong>Manual Skill Input (Optional):</strong> If you have trouble uploading your resume, you can manually enter your skills, separated by commas or one per line.</li>
+            <li><strong>Analysis:</strong> When you click "Analyze," the tool processes both the job description and your resume (or manual skills) to identify keywords. It then compares these keywords to find matches.</li>
+            <li><strong>Skill Alignment Score:</strong> A percentage score is displayed, indicating the proportion of job description keywords found in your resume.</li>
+            <li><strong>Matched Skills:</strong> A list of the specific skills found in both the job description and your resume is shown.</li>
+            <li><strong>Top Keyword Suggestions:</strong> The tool also identifies some of the most frequent keywords in the job description, which might be important to highlight in your application.</li>
+            <li><strong>Visualization (Coming Soon):</strong> A visual representation (like a word cloud or Venn diagram) will be displayed to further illustrate the skill overlap.</li>
+            <li><strong>Restart/Re-analyze:</strong> You can easily restart the analysis with new data or analyze with different job descriptions or resumes.</li>
+        </ul>
+        <p>This tool is intended to provide a quick initial assessment and should not be the sole basis for your application strategy. Always carefully tailor your resume and cover letter to each specific job.</p>
+        <button type="button" onclick="toggleAboutSection()">Close</button>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <button type="button" onclick="toggleAboutSection()">How This Tool Works</button>
+    </div>
+
+    <script>
+        const manualSkillsToggle = document.getElementById('manual-skills-toggle');
+        const manualSkillsInput = document.getElementById('manual-skills-input');
+        const resultsSection = document.getElementById('results-section');
+        const aboutSection = document.getElementById('about-section');
+
+        manualSkillsToggle.addEventListener('change', function() {
+            manualSkillsInput.style.display = this.checked ? 'block' : 'none';
+        });
+
+        function analyzeData() {
+            const formData = new FormData(document.getElementById('skill-mapper-form'));
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('matched-skills').innerText = data.matched_skills.join(', ');
+                document.getElementById('alignment-score').innerText = data.alignment_score;
+                const topKeywordsSuggestion = document.getElementById('top-keywords-suggestion');
+                if (data.top_job_keywords && data.top_job_keywords.length > 0) {
+                    topKeywordsSuggestion.innerText =
+                        "Consider highlighting these important skills in your resume: " + data.top_job_keywords.join(', ');
+                } else {
+                    topKeywordsSuggestion.innerText = "";
+                }
+                resultsSection.style.display = 'block';
+            })
+            .catch(error => {
+                console.error("Error analyzing skills:", error);
+                document.getElementById('results-section').innerHTML = `<p style="color: red;">Error during analysis: ${error}</p>`;
+                resultsSection.style.display = 'block';
+            });
+        }
+
+        function restartAnalysis() {
+            document.getElementById('job-description').value = '';
+            document.getElementById('resume-upload').value = '';
+            document.getElementById('manual-skills-toggle').checked = false;
+            manualSkillsInput.style.display = 'none';
+            resultsSection.style.display = 'none';
+        }
+
+        function showInputAgain() {
+            resultsSection.style.display = 'none';
+        }
+
+        function toggleAboutSection() {
+            aboutSection.style.display = aboutSection.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
