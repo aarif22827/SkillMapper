@@ -60,14 +60,6 @@ SkillMapper is a web application that helps job seekers quickly assess how well 
 
 This project is licensed under the [MIT License](LICENSE) - see the `LICENSE` file for details.
 
-## Contributing
-
-[Optional: If you plan to accept contributions, add guidelines here.]
-
 ## Author
 
 Asad Arif - [https://github.com/aarif22827](https://github.com/aarif22827)
-
-## Acknowledgements
-
-[Optional: If you used any external resources or libraries you want to acknowledge, add them here.]
